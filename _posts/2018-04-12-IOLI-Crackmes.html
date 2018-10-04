@@ -1,0 +1,63 @@
+---
+layout: post
+title:  "IOLI Crackmes"
+date:   2018-04-12 15:16:23 +0530
+categories: jekyll update
+---
+<html>
+<head></head>
+
+<body>
+<p>
+Here I document my attempt to solve the infamous IOLI Crackmes with my newly acquired radare2 skills. There do exist better approaches (and better write-ups for that matter), but this isn't meant to be a tutorial. Take a hint if you're stuck. Happy hacking!
+
+</p>
+<h3>crackme0x00</h3>
+since this is the 0th challenge, it should be an easy pick. peeking at strings of binary reveals the password.
+
+<script src="https://asciinema.org/a/2zWGqTI8OAuvIrBN2yeIIGzzv.js" id="asciicast-2zWGqTI8OAuvIrBN2yeIIGzzv" async></script>
+
+
+
+<h3>crackme0x01</h3>
+
+strings command isn't much help this time. upon inspection of binary with r2, the input password is compared to some constant value, and that's our password.
+
+<script src="https://asciinema.org/a/TmcQMWGw3ezP6pZFASgQe9JnB.js" id="asciicast-TmcQMWGw3ezP6pZFASgQe9JnB" async></script>
+
+<h3>crackme0x02</h3>
+
+looking at the binary, two numbers are added (0x5a + 0x1ec = 0x246), and the result is multiplied with itself (0x246 * 0x246 = 0x52b24 = 338724), which is compared to the input password.
+<script src="https://asciinema.org/a/DvH5QvFJHDRWLSKpIWkEzkyM1.js" id="asciicast-DvH5QvFJHDRWLSKpIWkEzkyM1" async></script>
+
+<h3>crackme0x03</h3>
+
+'test' function is called from main. here we have cmp instruction and two branches. In both the cases, another function 'shift' is called with different parameters. Now being lazy, I inspect the value being compared to and call the shift function with the correct parameter. As it happens, the password is the same as the previous level. 
+
+Alternatively, one can inspect shift function, but in this case, it is not required.
+<script src="https://asciinema.org/a/JzVBGrejYv2RnXWRRfTEKdSEG.js" id="asciicast-JzVBGrejYv2RnXWRRfTEKdSEG" async></script>
+<h3>crackme0x04</h3>
+
+'check' function is called from main. I spot a loop that goes through all the digits of input, adds them, and compares to a constant value (0xf). So, if at some point, the sum of digits is equal to 15, we've got correct password. 
+<script src="https://asciinema.org/a/vYjc2wEouQnpVGmjhRSsveHY8.js" id="asciicast-vYjc2wEouQnpVGmjhRSsveHY8" async></script>
+
+<h3>crackme0x05</h3>
+this is very similar to the previous challenge. here we want the sum of digits to be 16. once this is satisfied, another function 'parell' is called, which ANDs the number with 1 and compares it with 0, which is a test for even number. So, if at some point, the sum of digits is equal to 16 and the input number is even, we've got correct password. 
+<script src="https://asciinema.org/a/tF3vT2ConyBtpzVARLQiMEVVj.js" id="asciicast-tF3vT2ConyBtpzVARLQiMEVVj" async></script>
+
+<h3>crackme0x06</h3>
+again, similar to previous challenge, but we have another function called dummy. I had no idea what this function does, but I see a call to 'strcmp' function, which takes "LOLO" as one of its parameters. Now, inspection the other parameter, it looks like a bunch of environment variables. So intuition tells me that, it is looking for an env variable called "LOLO". I try it out and it works!
+
+<script src="https://asciinema.org/a/lZKtiX2NETignG34JPfEIC572.js" id="asciicast-lZKtiX2NETignG34JPfEIC572" async></script>
+<h3>crackme0x07</h3>
+this is exactly same as the previous one, but we have symbols stripped.
+<script src="https://asciinema.org/a/bevJpgLc7fOdOzMpNmmHgZUbJ.js" id="asciicast-bevJpgLc7fOdOzMpNmmHgZUbJ" async></script>
+<h3>crackme0x08</h3>
+again, this is an awful lot similar to previous one. This time I decided to do something different. I relied on a dirty trick called binary patching. Writing right instructions at right places gets you through the challenge!
+<script src="https://asciinema.org/a/DIuYjgIwHIeq2rOeuD5mQIfYV.js" id="asciicast-DIuYjgIwHIeq2rOeuD5mQIfYV" async></script>
+<h3>crackme0x09</h3>
+This time again, lazy me decided to rely on patching.
+<script src="https://asciinema.org/a/y2EVxdvxoWxhHBUAAoOMmLMLo.js" id="asciicast-y2EVxdvxoWxhHBUAAoOMmLMLo" async></script>
+</body>
+
+</html>

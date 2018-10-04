@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.4.0 -->
+<title>IOLI Crackmes | Jay Bhavsar</title>
+<meta name="generator" content="Jekyll v3.7.3" />
+<meta property="og:title" content="IOLI Crackmes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog is my way to document things I find interesting for my future self." />
+<meta property="og:description" content="This blog is my way to document things I find interesting for my future self." />
+<link rel="canonical" href="http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html" />
+<meta property="og:url" content="http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html" />
+<meta property="og:site_name" content="Jay Bhavsar" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-04-12T15:16:23+05:30" />
+<script type="application/ld+json">
+{"description":"This blog is my way to document things I find interesting for my future self.","@type":"BlogPosting","url":"http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html","headline":"IOLI Crackmes","dateModified":"2018-04-12T15:16:23+05:30","datePublished":"2018-04-12T15:16:23+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Jay Bhavsar" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Jay Bhavsar</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">IOLI Crackmes</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-04-12T15:16:23+05:30" itemprop="datePublished">Apr 12, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <html>
+<head></head>
+
+<body>
+<p>
+Here I document my attempt to solve the infamous IOLI Crackmes with my newly acquired radare2 skills. There do exist better approaches (and better write-ups for that matter), but this isn't meant to be a tutorial. Take a hint if you're stuck. Happy hacking!
+
+</p>
+<h3>crackme0x00</h3>
+since this is the 0th challenge, it should be an easy pick. peeking at strings of binary reveals the password.
+
+<script src="https://asciinema.org/a/2zWGqTI8OAuvIrBN2yeIIGzzv.js" id="asciicast-2zWGqTI8OAuvIrBN2yeIIGzzv" async></script>
+
+
+
+<h3>crackme0x01</h3>
+
+strings command isn't much help this time. upon inspection of binary with r2, the input password is compared to some constant value, and that's our password.
+
+<script src="https://asciinema.org/a/TmcQMWGw3ezP6pZFASgQe9JnB.js" id="asciicast-TmcQMWGw3ezP6pZFASgQe9JnB" async></script>
+
+<h3>crackme0x02</h3>
+
+looking at the binary, two numbers are added (0x5a + 0x1ec = 0x246), and the result is multiplied with itself (0x246 * 0x246 = 0x52b24 = 338724), which is compared to the input password.
+<script src="https://asciinema.org/a/DvH5QvFJHDRWLSKpIWkEzkyM1.js" id="asciicast-DvH5QvFJHDRWLSKpIWkEzkyM1" async></script>
+
+<h3>crackme0x03</h3>
+
+'test' function is called from main. here we have cmp instruction and two branches. In both the cases, another function 'shift' is called with different parameters. Now being lazy, I inspect the value being compared to and call the shift function with the correct parameter. As it happens, the password is the same as the previous level. 
+
+Alternatively, one can inspect shift function, but in this case, it is not required.
+<script src="https://asciinema.org/a/JzVBGrejYv2RnXWRRfTEKdSEG.js" id="asciicast-JzVBGrejYv2RnXWRRfTEKdSEG" async></script>
+<h3>crackme0x04</h3>
+
+'check' function is called from main. I spot a loop that goes through all the digits of input, adds them, and compares to a constant value (0xf). So, if at some point, the sum of digits is equal to 15, we've got correct password. 
+<script src="https://asciinema.org/a/vYjc2wEouQnpVGmjhRSsveHY8.js" id="asciicast-vYjc2wEouQnpVGmjhRSsveHY8" async></script>
+
+<h3>crackme0x05</h3>
+this is very similar to the previous challenge. here we want the sum of digits to be 16. once this is satisfied, another function 'parell' is called, which ANDs the number with 1 and compares it with 0, which is a test for even number. So, if at some point, the sum of digits is equal to 16 and the input number is even, we've got correct password. 
+<script src="https://asciinema.org/a/tF3vT2ConyBtpzVARLQiMEVVj.js" id="asciicast-tF3vT2ConyBtpzVARLQiMEVVj" async></script>
+
+<h3>crackme0x06</h3>
+again, similar to previous challenge, but we have another function called dummy. I had no idea what this function does, but I see a call to 'strcmp' function, which takes "LOLO" as one of its parameters. Now, inspection the other parameter, it looks like a bunch of environment variables. So intuition tells me that, it is looking for an env variable called "LOLO". I try it out and it works!
+
+<script src="https://asciinema.org/a/lZKtiX2NETignG34JPfEIC572.js" id="asciicast-lZKtiX2NETignG34JPfEIC572" async></script>
+<h3>crackme0x07</h3>
+this is exactly same as the previous one, but we have symbols stripped.
+<script src="https://asciinema.org/a/bevJpgLc7fOdOzMpNmmHgZUbJ.js" id="asciicast-bevJpgLc7fOdOzMpNmmHgZUbJ" async></script>
+<h3>crackme0x08</h3>
+again, this is an awful lot similar to previous one. This time I decided to do something different. I relied on a dirty trick called binary patching. Writing right instructions at right places gets you through the challenge!
+<script src="https://asciinema.org/a/DIuYjgIwHIeq2rOeuD5mQIfYV.js" id="asciicast-DIuYjgIwHIeq2rOeuD5mQIfYV" async></script>
+<h3>crackme0x09</h3>
+This time again, lazy me decided to rely on patching.
+<script src="https://asciinema.org/a/y2EVxdvxoWxhHBUAAoOMmLMLo.js" id="asciicast-y2EVxdvxoWxhHBUAAoOMmLMLo" async></script>
+</body>
+
+</html>
+
+  </div><a class="u-url" href="/jekyll/update/2018/04/12/IOLI-Crackmes.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Jay Bhavsar</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Jay Bhavsar</li><li><a class="u-email" href="mailto:jbhv12@gmail.com">jbhv12@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jbhv12"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jbhv12</span></a></li><li><a href="https://www.linkedin.com/in/jbhv12"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">jbhv12</span></a></li><li><a href="https://www.twitter.com/jbhv12"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jbhv12</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>This blog is my way to document things I find interesting for my future self.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

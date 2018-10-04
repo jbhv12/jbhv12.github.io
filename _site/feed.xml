@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-10-04T10:00:54+05:30</updated><id>http://localhost:4000/</id><title type="html">Jay Bhavsar</title><subtitle>This blog is my way to document things I find interesting for my future self.</subtitle><entry><title type="html">IOLI Crackmes</title><link href="http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html" rel="alternate" type="text/html" title="IOLI Crackmes" /><published>2018-04-12T15:16:23+05:30</published><updated>2018-04-12T15:16:23+05:30</updated><id>http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2018/04/12/IOLI-Crackmes.html">&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+
+&lt;body&gt;
+&lt;p&gt;
+Here I document my attempt to solve the infamous IOLI Crackmes with my newly acquired radare2 skills. There do exist better approaches (and better write-ups for that matter), but this isn't meant to be a tutorial. Take a hint if you're stuck. Happy hacking!
+
+&lt;/p&gt;
+&lt;h3&gt;crackme0x00&lt;/h3&gt;
+since this is the 0th challenge, it should be an easy pick. peeking at strings of binary reveals the password.
+
+&lt;script src=&quot;https://asciinema.org/a/2zWGqTI8OAuvIrBN2yeIIGzzv.js&quot; id=&quot;asciicast-2zWGqTI8OAuvIrBN2yeIIGzzv&quot; async&gt;&lt;/script&gt;
+
+
+
+&lt;h3&gt;crackme0x01&lt;/h3&gt;
+
+strings command isn't much help this time. upon inspection of binary with r2, the input password is compared to some constant value, and that's our password.
+
+&lt;script src=&quot;https://asciinema.org/a/TmcQMWGw3ezP6pZFASgQe9JnB.js&quot; id=&quot;asciicast-TmcQMWGw3ezP6pZFASgQe9JnB&quot; async&gt;&lt;/script&gt;
+
+&lt;h3&gt;crackme0x02&lt;/h3&gt;
+
+looking at the binary, two numbers are added (0x5a + 0x1ec = 0x246), and the result is multiplied with itself (0x246 * 0x246 = 0x52b24 = 338724), which is compared to the input password.
+&lt;script src=&quot;https://asciinema.org/a/DvH5QvFJHDRWLSKpIWkEzkyM1.js&quot; id=&quot;asciicast-DvH5QvFJHDRWLSKpIWkEzkyM1&quot; async&gt;&lt;/script&gt;
+
+&lt;h3&gt;crackme0x03&lt;/h3&gt;
+
+'test' function is called from main. here we have cmp instruction and two branches. In both the cases, another function 'shift' is called with different parameters. Now being lazy, I inspect the value being compared to and call the shift function with the correct parameter. As it happens, the password is the same as the previous level. 
+
+Alternatively, one can inspect shift function, but in this case, it is not required.
+&lt;script src=&quot;https://asciinema.org/a/JzVBGrejYv2RnXWRRfTEKdSEG.js&quot; id=&quot;asciicast-JzVBGrejYv2RnXWRRfTEKdSEG&quot; async&gt;&lt;/script&gt;
+&lt;h3&gt;crackme0x04&lt;/h3&gt;
+
+'check' function is called from main. I spot a loop that goes through all the digits of input, adds them, and compares to a constant value (0xf). So, if at some point, the sum of digits is equal to 15, we've got correct password. 
+&lt;script src=&quot;https://asciinema.org/a/vYjc2wEouQnpVGmjhRSsveHY8.js&quot; id=&quot;asciicast-vYjc2wEouQnpVGmjhRSsveHY8&quot; async&gt;&lt;/script&gt;
+
+&lt;h3&gt;crackme0x05&lt;/h3&gt;
+this is very similar to the previous challenge. here we want the sum of digits to be 16. once this is satisfied, another function 'parell' is called, which ANDs the number with 1 and compares it with 0, which is a test for even number. So, if at some point, the sum of digits is equal to 16 and the input number is even, we've got correct password. 
+&lt;script src=&quot;https://asciinema.org/a/tF3vT2ConyBtpzVARLQiMEVVj.js&quot; id=&quot;asciicast-tF3vT2ConyBtpzVARLQiMEVVj&quot; async&gt;&lt;/script&gt;
+
+&lt;h3&gt;crackme0x06&lt;/h3&gt;
+again, similar to previous challenge, but we have another function called dummy. I had no idea what this function does, but I see a call to 'strcmp' function, which takes &quot;LOLO&quot; as one of its parameters. Now, inspection the other parameter, it looks like a bunch of environment variables. So intuition tells me that, it is looking for an env variable called &quot;LOLO&quot;. I try it out and it works!
+
+&lt;script src=&quot;https://asciinema.org/a/lZKtiX2NETignG34JPfEIC572.js&quot; id=&quot;asciicast-lZKtiX2NETignG34JPfEIC572&quot; async&gt;&lt;/script&gt;
+&lt;h3&gt;crackme0x07&lt;/h3&gt;
+this is exactly same as the previous one, but we have symbols stripped.
+&lt;script src=&quot;https://asciinema.org/a/bevJpgLc7fOdOzMpNmmHgZUbJ.js&quot; id=&quot;asciicast-bevJpgLc7fOdOzMpNmmHgZUbJ&quot; async&gt;&lt;/script&gt;
+&lt;h3&gt;crackme0x08&lt;/h3&gt;
+again, this is an awful lot similar to previous one. This time I decided to do something different. I relied on a dirty trick called binary patching. Writing right instructions at right places gets you through the challenge!
+&lt;script src=&quot;https://asciinema.org/a/DIuYjgIwHIeq2rOeuD5mQIfYV.js&quot; id=&quot;asciicast-DIuYjgIwHIeq2rOeuD5mQIfYV&quot; async&gt;&lt;/script&gt;
+&lt;h3&gt;crackme0x09&lt;/h3&gt;
+This time again, lazy me decided to rely on patching.
+&lt;script src=&quot;https://asciinema.org/a/y2EVxdvxoWxhHBUAAoOMmLMLo.js&quot; id=&quot;asciicast-y2EVxdvxoWxhHBUAAoOMmLMLo&quot; async&gt;&lt;/script&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</content><author><name></name></author><summary type="html"></summary></entry></feed>
